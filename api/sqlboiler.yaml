@@ -1,0 +1,15 @@
+schema: 'public'
+pkg-name: 'dbmodel'
+output: 'internal/repository/dbmodel'
+wipe: true
+no-tests: true
+no-hooks: true
+
+psql:
+  dbname: 'UserManagement'
+  host: 'localhost'
+  port: '5432'
+  user: 'postgres'
+  pass: 'tin14091998'
+  sslmode: 'disable'
+  blacklist: ['schema_migrations']
