@@ -1,8 +1,25 @@
+# github.com/bwmarrin/snowflake v0.3.0
+## explicit
+github.com/bwmarrin/snowflake
 # github.com/friendsofgo/errors v0.9.2
 ## explicit; go 1.13
 github.com/friendsofgo/errors
 # github.com/google/go-cmp v0.5.9
 ## explicit; go 1.13
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
+# github.com/lib/pq v1.10.9
+## explicit; go 1.13
+github.com/lib/pq
+github.com/lib/pq/oid
+github.com/lib/pq/scram
+# github.com/pkg/errors v0.9.1
+## explicit
+github.com/pkg/errors
+# github.com/sony/sonyflake v1.1.0
+## explicit; go 1.13
+github.com/sony/sonyflake
 # github.com/spf13/cast v1.5.0
 ## explicit; go 1.18
 github.com/spf13/cast
