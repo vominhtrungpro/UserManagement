@@ -1,15 +1,15 @@
 package generator
 
-// import (
-// 	"vominhtrungpro/usermanagement/api/internal/pkg/snowflake"
-// )
+import (
+	"vominhtrungpro/usermanagement/internal/pkg/snowflake"
+)
 
-// var (
-// 	ProductSNF snowflake.SnowflakeGenerator
-// )
+var (
+	ProductSNF snowflake.SnowflakeGenerator
+)
 
-// func InitSnowflakeGenerators() error {
-// 	ProductSNF = snowflake.New()
+func InitSnowflakeGenerators() error {
+	ProductSNF = snowflake.New()
 
-// 	return nil
-// }
+	return nil
+}
