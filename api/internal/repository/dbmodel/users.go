@@ -23,7 +23,7 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	UserID   int    `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
+	ID       int64  `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Username string `boil:"username" json:"username" toml:"username" yaml:"username"`
 	Password string `boil:"password" json:"password" toml:"password" yaml:"password"`
 	Email    string `boil:"email" json:"email" toml:"email" yaml:"email"`
@@ -34,13 +34,13 @@ type User struct {
 }
 
 var UserColumns = struct {
-	UserID   string
+	ID       string
 	Username string
 	Password string
 	Email    string
 	Age      string
 }{
-	UserID:   "user_id",
+	ID:       "id",
 	Username: "username",
 	Password: "password",
 	Email:    "email",
@@ -48,13 +48,13 @@ var UserColumns = struct {
 }
 
 var UserTableColumns = struct {
-	UserID   string
+	ID       string
 	Username string
 	Password string
 	Email    string
 	Age      string
 }{
-	UserID:   "users.user_id",
+	ID:       "users.id",
 	Username: "users.username",
 	Password: "users.password",
 	Email:    "users.email",
@@ -63,22 +63,22 @@ var UserTableColumns = struct {
 
 // Generated where
 
-type whereHelperint struct{ field string }
+type whereHelperint64 struct{ field string }
 
-func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint) IN(slice []int) qm.QueryMod {
+func (w whereHelperint64) EQ(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperint64) NEQ(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperint64) LT(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperint64) LTE(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperint64) GT(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperint64) GTE(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+func (w whereHelperint64) IN(slice []int64) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
 }
-func (w whereHelperint) NIN(slice []int) qm.QueryMod {
+func (w whereHelperint64) NIN(slice []int64) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
@@ -109,14 +109,37 @@ func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
+type whereHelperint struct{ field string }
+
+func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+func (w whereHelperint) IN(slice []int) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+func (w whereHelperint) NIN(slice []int) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+}
+
 var UserWhere = struct {
-	UserID   whereHelperint
+	ID       whereHelperint64
 	Username whereHelperstring
 	Password whereHelperstring
 	Email    whereHelperstring
 	Age      whereHelperint
 }{
-	UserID:   whereHelperint{field: "\"users\".\"user_id\""},
+	ID:       whereHelperint64{field: "\"users\".\"id\""},
 	Username: whereHelperstring{field: "\"users\".\"username\""},
 	Password: whereHelperstring{field: "\"users\".\"password\""},
 	Email:    whereHelperstring{field: "\"users\".\"email\""},
@@ -140,10 +163,10 @@ func (*userR) NewStruct() *userR {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"user_id", "username", "password", "email", "age"}
-	userColumnsWithoutDefault = []string{"username", "password", "email", "age"}
-	userColumnsWithDefault    = []string{"user_id"}
-	userPrimaryKeyColumns     = []string{"user_id"}
+	userAllColumns            = []string{"id", "username", "password", "email", "age"}
+	userColumnsWithoutDefault = []string{"id", "username", "password", "email", "age"}
+	userColumnsWithDefault    = []string{}
+	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )
 
@@ -251,7 +274,7 @@ func Users(mods ...qm.QueryMod) userQuery {
 
 // FindUser retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindUser(ctx context.Context, exec boil.ContextExecutor, userID int, selectCols ...string) (*User, error) {
+func FindUser(ctx context.Context, exec boil.ContextExecutor, iD int64, selectCols ...string) (*User, error) {
 	userObj := &User{}
 
 	sel := "*"
@@ -259,10 +282,10 @@ func FindUser(ctx context.Context, exec boil.ContextExecutor, userID int, select
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"users\" where \"user_id\"=$1", sel,
+		"select %s from \"users\" where \"id\"=$1", sel,
 	)
 
-	q := queries.Raw(query, userID)
+	q := queries.Raw(query, iD)
 
 	err := q.Bind(ctx, exec, userObj)
 	if err != nil {
@@ -595,7 +618,7 @@ func (o *User) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, er
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), userPrimaryKeyMapping)
-	sql := "DELETE FROM \"users\" WHERE \"user_id\"=$1"
+	sql := "DELETE FROM \"users\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -672,7 +695,7 @@ func (o UserSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *User) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindUser(ctx, exec, o.UserID)
+	ret, err := FindUser(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -711,16 +734,16 @@ func (o *UserSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 }
 
 // UserExists checks if the User row exists.
-func UserExists(ctx context.Context, exec boil.ContextExecutor, userID int) (bool, error) {
+func UserExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"users\" where \"user_id\"=$1 limit 1)"
+	sql := "select exists(select 1 from \"users\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, userID)
+		fmt.Fprintln(writer, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, userID)
+	row := exec.QueryRowContext(ctx, sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {
@@ -732,5 +755,5 @@ func UserExists(ctx context.Context, exec boil.ContextExecutor, userID int) (boo
 
 // Exists checks if the User row exists.
 func (o *User) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
-	return UserExists(ctx, exec, o.UserID)
+	return UserExists(ctx, exec, o.ID)
 }

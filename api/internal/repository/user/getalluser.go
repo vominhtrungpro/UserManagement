@@ -16,7 +16,7 @@ func (i impl) GetAllUser(ctx context.Context) ([]model.User, error) {
 	var users []model.User
 	for _, item := range usersdb {
 		var user model.User
-		user.ID = int64(item.UserID)
+		user.ID = item.ID
 		user.Username = item.Username
 		user.Password = item.Password
 		user.Email = item.Email

@@ -34,6 +34,10 @@ func (rtr router) public(r chi.Router) {
 			pattern := prefix + "/users"
 
 			r.Get(pattern, userR.New(rtr.userCtrl).GetAllUser())
+			r.Post(pattern, userR.New(rtr.userCtrl).CreateUser())
+			r.Put(pattern, userR.New(rtr.userCtrl).UpdateUser())
+			r.Delete(pattern+"/id/{id}", userR.New(rtr.userCtrl).DeleteUser())
+			r.Get(pattern+"/id/{id}", userR.New(rtr.userCtrl).GetUserByID())
 		})
 	})
 
