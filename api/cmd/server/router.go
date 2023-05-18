@@ -2,8 +2,11 @@ package main
 
 import (
 	"net/http"
+	"vominhtrungpro/usermanagement/graph"
 	userC "vominhtrungpro/usermanagement/internal/controller/user"
 	userR "vominhtrungpro/usermanagement/internal/handler/rest/user"
+
+	"github.com/99designs/gqlgen/graphql/handler"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -41,6 +44,6 @@ func (rtr router) public(r chi.Router) {
 		})
 	})
 
-	// srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{UserCtrl: rtr.userCtrl}}))
-	// r.Handle("/graphql", srv)
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{UserCtrl: rtr.userCtrl}}))
+	r.Handle("/graphql", srv)
 }
