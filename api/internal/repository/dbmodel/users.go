@@ -31,6 +31,7 @@ type User struct {
 	Age                    int         `boil:"age" json:"age" toml:"age" yaml:"age"`
 	Refreshtoken           null.String `boil:"refreshtoken" json:"refreshtoken,omitempty" toml:"refreshtoken" yaml:"refreshtoken,omitempty"`
 	RefreshtokenExpiretime null.Time   `boil:"refreshtoken_expiretime" json:"refreshtoken_expiretime,omitempty" toml:"refreshtoken_expiretime" yaml:"refreshtoken_expiretime,omitempty"`
+	Avatar                 null.Bytes  `boil:"avatar" json:"avatar,omitempty" toml:"avatar" yaml:"avatar,omitempty"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -44,6 +45,7 @@ var UserColumns = struct {
 	Age                    string
 	Refreshtoken           string
 	RefreshtokenExpiretime string
+	Avatar                 string
 }{
 	ID:                     "id",
 	Username:               "username",
@@ -52,6 +54,7 @@ var UserColumns = struct {
 	Age:                    "age",
 	Refreshtoken:           "refreshtoken",
 	RefreshtokenExpiretime: "refreshtoken_expiretime",
+	Avatar:                 "avatar",
 }
 
 var UserTableColumns = struct {
@@ -62,6 +65,7 @@ var UserTableColumns = struct {
 	Age                    string
 	Refreshtoken           string
 	RefreshtokenExpiretime string
+	Avatar                 string
 }{
 	ID:                     "users.id",
 	Username:               "users.username",
@@ -70,6 +74,7 @@ var UserTableColumns = struct {
 	Age:                    "users.age",
 	Refreshtoken:           "users.refreshtoken",
 	RefreshtokenExpiretime: "users.refreshtoken_expiretime",
+	Avatar:                 "users.avatar",
 }
 
 // Generated where
@@ -205,6 +210,30 @@ func (w whereHelpernull_Time) GTE(x null.Time) qm.QueryMod {
 func (w whereHelpernull_Time) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
 func (w whereHelpernull_Time) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
+type whereHelpernull_Bytes struct{ field string }
+
+func (w whereHelpernull_Bytes) EQ(x null.Bytes) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Bytes) NEQ(x null.Bytes) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Bytes) LT(x null.Bytes) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Bytes) LTE(x null.Bytes) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Bytes) GT(x null.Bytes) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Bytes) GTE(x null.Bytes) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
+func (w whereHelpernull_Bytes) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Bytes) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
 var UserWhere = struct {
 	ID                     whereHelperint64
 	Username               whereHelperstring
@@ -213,6 +242,7 @@ var UserWhere = struct {
 	Age                    whereHelperint
 	Refreshtoken           whereHelpernull_String
 	RefreshtokenExpiretime whereHelpernull_Time
+	Avatar                 whereHelpernull_Bytes
 }{
 	ID:                     whereHelperint64{field: "\"users\".\"id\""},
 	Username:               whereHelperstring{field: "\"users\".\"username\""},
@@ -221,6 +251,7 @@ var UserWhere = struct {
 	Age:                    whereHelperint{field: "\"users\".\"age\""},
 	Refreshtoken:           whereHelpernull_String{field: "\"users\".\"refreshtoken\""},
 	RefreshtokenExpiretime: whereHelpernull_Time{field: "\"users\".\"refreshtoken_expiretime\""},
+	Avatar:                 whereHelpernull_Bytes{field: "\"users\".\"avatar\""},
 }
 
 // UserRels is where relationship names are stored.
@@ -240,9 +271,9 @@ func (*userR) NewStruct() *userR {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "username", "password", "email", "age", "refreshtoken", "refreshtoken_expiretime"}
+	userAllColumns            = []string{"id", "username", "password", "email", "age", "refreshtoken", "refreshtoken_expiretime", "avatar"}
 	userColumnsWithoutDefault = []string{"id", "username", "password", "email", "age"}
-	userColumnsWithDefault    = []string{"refreshtoken", "refreshtoken_expiretime"}
+	userColumnsWithDefault    = []string{"refreshtoken", "refreshtoken_expiretime", "avatar"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )

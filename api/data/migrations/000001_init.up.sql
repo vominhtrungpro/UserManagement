@@ -5,5 +5,6 @@ CREATE TABLE IF NOT EXISTS users(
    email VARCHAR (300) UNIQUE NOT NULL,
    age INT NOT NULL,
    refreshtoken TEXT,
-   refreshtoken_expiretime TIMESTAMP WITH TIME ZONE
+   refreshtoken_expiretime TIMESTAMP WITH TIME ZONE,
+   avatar BYTEA
 );
