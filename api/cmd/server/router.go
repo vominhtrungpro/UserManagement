@@ -2,17 +2,18 @@ package main
 
 import (
 	"net/http"
-	"vominhtrungpro/usermanagement/graph"
 	userC "vominhtrungpro/usermanagement/internal/controller/user"
 	userR "vominhtrungpro/usermanagement/internal/handler/rest/user"
 
-	"github.com/99designs/gqlgen/graphql/handler"
+	authenC "vominhtrungpro/usermanagement/internal/controller/authentication"
+	authenR "vominhtrungpro/usermanagement/internal/handler/rest/authentication"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type router struct {
-	userCtrl userC.Controller
+	userCtrl   userC.Controller
+	authenCtrl authenC.Controller
 }
 
 func (rtr router) routes(r chi.Router) {
@@ -42,8 +43,14 @@ func (rtr router) public(r chi.Router) {
 			r.Delete(pattern+"/id/{id}", userR.New(rtr.userCtrl).DeleteUser())
 			r.Get(pattern+"/id/{id}", userR.New(rtr.userCtrl).GetUserByID())
 		})
+		r.Group(func(r chi.Router) {
+			pattern := prefix + "/login"
+
+			r.Post(pattern, authenR.New(rtr.authenCtrl).Login())
+		})
+
 	})
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{UserCtrl: rtr.userCtrl}}))
-	r.Handle("/graphql", srv)
+	// srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{UserCtrl: rtr.userCtrl}}))
+	// r.Handle("/graphql", srv)
 }

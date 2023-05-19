@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
+	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -23,42 +24,52 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID       int64  `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Username string `boil:"username" json:"username" toml:"username" yaml:"username"`
-	Password string `boil:"password" json:"password" toml:"password" yaml:"password"`
-	Email    string `boil:"email" json:"email" toml:"email" yaml:"email"`
-	Age      int    `boil:"age" json:"age" toml:"age" yaml:"age"`
+	ID                     int64       `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Username               string      `boil:"username" json:"username" toml:"username" yaml:"username"`
+	Password               string      `boil:"password" json:"password" toml:"password" yaml:"password"`
+	Email                  string      `boil:"email" json:"email" toml:"email" yaml:"email"`
+	Age                    int         `boil:"age" json:"age" toml:"age" yaml:"age"`
+	Refreshtoken           null.String `boil:"refreshtoken" json:"refreshtoken,omitempty" toml:"refreshtoken" yaml:"refreshtoken,omitempty"`
+	RefreshtokenExpiretime null.Time   `boil:"refreshtoken_expiretime" json:"refreshtoken_expiretime,omitempty" toml:"refreshtoken_expiretime" yaml:"refreshtoken_expiretime,omitempty"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var UserColumns = struct {
-	ID       string
-	Username string
-	Password string
-	Email    string
-	Age      string
+	ID                     string
+	Username               string
+	Password               string
+	Email                  string
+	Age                    string
+	Refreshtoken           string
+	RefreshtokenExpiretime string
 }{
-	ID:       "id",
-	Username: "username",
-	Password: "password",
-	Email:    "email",
-	Age:      "age",
+	ID:                     "id",
+	Username:               "username",
+	Password:               "password",
+	Email:                  "email",
+	Age:                    "age",
+	Refreshtoken:           "refreshtoken",
+	RefreshtokenExpiretime: "refreshtoken_expiretime",
 }
 
 var UserTableColumns = struct {
-	ID       string
-	Username string
-	Password string
-	Email    string
-	Age      string
+	ID                     string
+	Username               string
+	Password               string
+	Email                  string
+	Age                    string
+	Refreshtoken           string
+	RefreshtokenExpiretime string
 }{
-	ID:       "users.id",
-	Username: "users.username",
-	Password: "users.password",
-	Email:    "users.email",
-	Age:      "users.age",
+	ID:                     "users.id",
+	Username:               "users.username",
+	Password:               "users.password",
+	Email:                  "users.email",
+	Age:                    "users.age",
+	Refreshtoken:           "users.refreshtoken",
+	RefreshtokenExpiretime: "users.refreshtoken_expiretime",
 }
 
 // Generated where
@@ -132,18 +143,84 @@ func (w whereHelperint) NIN(slice []int) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
+type whereHelpernull_String struct{ field string }
+
+func (w whereHelpernull_String) EQ(x null.String) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_String) NEQ(x null.String) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_String) LT(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_String) LTE(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_String) GT(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_String) GTE(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+func (w whereHelpernull_String) IN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+func (w whereHelpernull_String) NIN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+}
+
+func (w whereHelpernull_String) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_String) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
+type whereHelpernull_Time struct{ field string }
+
+func (w whereHelpernull_Time) EQ(x null.Time) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Time) NEQ(x null.Time) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Time) LT(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Time) LTE(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Time) GT(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Time) GTE(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
+func (w whereHelpernull_Time) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Time) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
 var UserWhere = struct {
-	ID       whereHelperint64
-	Username whereHelperstring
-	Password whereHelperstring
-	Email    whereHelperstring
-	Age      whereHelperint
+	ID                     whereHelperint64
+	Username               whereHelperstring
+	Password               whereHelperstring
+	Email                  whereHelperstring
+	Age                    whereHelperint
+	Refreshtoken           whereHelpernull_String
+	RefreshtokenExpiretime whereHelpernull_Time
 }{
-	ID:       whereHelperint64{field: "\"users\".\"id\""},
-	Username: whereHelperstring{field: "\"users\".\"username\""},
-	Password: whereHelperstring{field: "\"users\".\"password\""},
-	Email:    whereHelperstring{field: "\"users\".\"email\""},
-	Age:      whereHelperint{field: "\"users\".\"age\""},
+	ID:                     whereHelperint64{field: "\"users\".\"id\""},
+	Username:               whereHelperstring{field: "\"users\".\"username\""},
+	Password:               whereHelperstring{field: "\"users\".\"password\""},
+	Email:                  whereHelperstring{field: "\"users\".\"email\""},
+	Age:                    whereHelperint{field: "\"users\".\"age\""},
+	Refreshtoken:           whereHelpernull_String{field: "\"users\".\"refreshtoken\""},
+	RefreshtokenExpiretime: whereHelpernull_Time{field: "\"users\".\"refreshtoken_expiretime\""},
 }
 
 // UserRels is where relationship names are stored.
@@ -163,9 +240,9 @@ func (*userR) NewStruct() *userR {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "username", "password", "email", "age"}
+	userAllColumns            = []string{"id", "username", "password", "email", "age", "refreshtoken", "refreshtoken_expiretime"}
 	userColumnsWithoutDefault = []string{"id", "username", "password", "email", "age"}
-	userColumnsWithDefault    = []string{}
+	userColumnsWithDefault    = []string{"refreshtoken", "refreshtoken_expiretime"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )

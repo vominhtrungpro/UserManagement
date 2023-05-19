@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log"
 	"vominhtrungpro/usermanagement/internal/appconfig/db/pg"
+	"vominhtrungpro/usermanagement/internal/controller/authentication"
 	"vominhtrungpro/usermanagement/internal/controller/user"
 	"vominhtrungpro/usermanagement/internal/httpserver"
 	"vominhtrungpro/usermanagement/internal/repository"
@@ -37,7 +38,10 @@ func initRouter(_ context.Context, db *sql.DB) (router, error) {
 
 	userCtrl := user.New(repo)
 
+	authenCtrl := authentication.New(repo)
+
 	return router{
-		userCtrl: userCtrl,
+		userCtrl:   userCtrl,
+		authenCtrl: authenCtrl,
 	}, nil
 }
